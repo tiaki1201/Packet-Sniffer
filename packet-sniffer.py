@@ -5,6 +5,8 @@ import sys
 import pcapy
 import ipaddress
 
+# Watched all 8 tutorials from the new Boston https://www.youtube.com/watch?v=_HIefrog_eg and refered to bits of his code
+
 def main(pcap_filename):
     print("Opening file: '{}'".format(pcap_filename))
     pcap_reader = pcapy.open_offline(pcap_filename)
@@ -34,20 +36,18 @@ def main(pcap_filename):
             if ipv4_proto == 1:
                 print ('  Protocol: ICMP')
                 icmp_packet(data)
-                print (print_raw_data(raw_data))
 
             # Check for TCP
             elif ipv4_proto == 6:
                 print ('  Protocol: TCP')
                 tcp_segment(data)
-                print (print_raw_data(raw_data))
-
 
             # Check for UDP
             elif ipv4_proto == 17:
                 print ('  Protocol: UDP')
                 udp_segment(data)
-                print (print_raw_data(raw_data))
+            print ('\n')
+            print (print_raw_data(raw_data))
 
 
         # Check for IPv6
@@ -55,6 +55,23 @@ def main(pcap_filename):
             print ('Ether Type: IPv6')
             next_header, ipv6 = ipv6_packet(eth_data)
 
+            print (next_header)
+            # Checks TCP
+            if (next_header == 6):
+                print('  Protocol: TCP')
+
+            # Checks UDP
+            elif (next_header == 17):
+                print('  Protocol: UDP')
+
+            # Checks ICMPv6
+            elif (next_header == 58):
+                print('  Protocol: ICMPv6')
+
+            elif (next_header == 0):
+                print('  Protocol: Exth')
+
+            print ('\n')
             print_raw_data(raw_data)
 
         # Unknown
